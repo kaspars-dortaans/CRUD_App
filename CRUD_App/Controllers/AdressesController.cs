@@ -85,20 +85,12 @@ namespace CRUD_App.Controllers
             {
                 return NotFound();
             }
-            /*
-            var departmentsQuery = from d in _context.Departments
-                                   orderby d.Name
-                                   select d;
-            ViewBag.DepartmentID = new SelectList(departmentsQuery.AsNoTracking(), "DepartmentID", "Name", selectedDepartment);
-            */
 
-            PopulateCountryDropDownList(adress.CountryID);
-            PopulateCustomerDropDownList(adress.CustomerID);
+            
 
-            if(ViewBag.CountryID == null)
-            {
-                Console.WriteLine("");
-            }
+            ViewData["CountryID"] = new SelectList(_context.Set<Country>(), "CountryID", "Name", adress.CountryID);
+            ViewData["CustomerID"] = new SelectList(_context.Set<Customer>(), "CustomerID", "FullName", adress.CountryID);
+            ViewData["AdressType"] = new SelectList(Enum.GetValues(typeof(Adress.AdressType)), adress.Type);
 
             return View(adress);
         }
@@ -135,25 +127,12 @@ namespace CRUD_App.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
+
             ViewData["CountryID"] = new SelectList(_context.Set<Country>(), "ID", "ID", adress.CountryID);
             ViewData["CustomerID"] = new SelectList(_context.Customer, "ID", "ID", adress.CustomerID);
             return View(adress);
         }
 
-        private void PopulateCountryDropDownList(object selectedCountry = null)
-        {
-            var query = from d in _context.Countrie
-                                   orderby d.Name
-                                   select d;
-            ViewBag.CountryID = new SelectList(query.AsNoTracking(), "DepartmentID", "Name", selectedCountry);
-        }
-        private void PopulateCustomerDropDownList(object customerCountry = null)
-        {
-            var query = from d in _context.Countrie
-                        orderby d.Name
-                        select d;
-            ViewBag.CustomerID = new SelectList(query.AsNoTracking(), "DepartmentID", "Name", customerCountry);
-        }
 
         // GET: Adresses/Delete/5
         public async Task<IActionResult> Delete(int? id)
