@@ -1,0 +1,194 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.EntityFrameworkCore;
+using CRUD_App.Data;
+using CRUD_App.Models;
+
+namespace CRUD_App.Controllers
+{
+    public class AdressesController : Controller
+    {
+        private readonly AppDbContext _context;
+
+        public AdressesController(AppDbContext context)
+        {
+            _context = context;
+        }
+
+        // GET: Adresses
+        public async Task<IActionResult> Index()
+        {
+            var appDbContext = _context.Adress.Include(a => a.Country).Include(a => a.Customer);
+            return View(await appDbContext.ToListAsync());
+        }
+
+        // GET: Adresses/Details/5
+        public async Task<IActionResult> Details(int? id)
+        {
+            if (id == null)
+            {
+                return NotFound();
+            }
+
+            var adress = await _context.Adress
+                .Include(a => a.Country)
+                .Include(a => a.Customer)
+                .FirstOrDefaultAsync(m => m.AdressID == id);
+            if (adress == null)
+            {
+                return NotFound();
+            }
+
+            return View(adress);
+        }
+
+        // GET: Adresses/Create
+        public IActionResult Create()
+        {
+            ViewData["CountryID"] = new SelectList(_context.Set<Country>(), "ID", "ID");
+            ViewData["CustomerID"] = new SelectList(_context.Customer, "ID", "ID");
+            return View();
+        }
+
+        // POST: Adresses/Create
+        // To protect from overposting attacks, enable the specific properties you want to bind to, for 
+        // more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Create([Bind("ID,CustomerID,StreetAdress,City,Zip,CountryID,Type")] Adress adress)
+        {
+            if (ModelState.IsValid)
+            {
+                _context.Add(adress);
+                await _context.SaveChangesAsync();
+                return RedirectToAction(nameof(Index));
+            }
+            ViewData["CountryID"] = new SelectList(_context.Set<Country>(), "ID", "ID", adress.CountryID);
+            ViewData["CustomerID"] = new SelectList(_context.Customer, "ID", "ID", adress.CustomerID);
+            return View(adress);
+        }
+
+        // GET: Adresses/Edit/5
+        public async Task<IActionResult> Edit(int? id)
+        {
+            if (id == null)
+            {
+                return NotFound();
+            }
+
+            var adress = await _context.Adress.SingleAsync(a => a.AdressID == id);
+            if (adress == null)
+            {
+                return NotFound();
+            }
+            /*
+            var departmentsQuery = from d in _context.Departments
+                                   orderby d.Name
+                                   select d;
+            ViewBag.DepartmentID = new SelectList(departmentsQuery.AsNoTracking(), "DepartmentID", "Name", selectedDepartment);
+            */
+
+            PopulateCountryDropDownList(adress.CountryID);
+            PopulateCustomerDropDownList(adress.CustomerID);
+
+            if(ViewBag.CountryID == null)
+            {
+                Console.WriteLine("");
+            }
+
+            return View(adress);
+        }
+
+        // POST: Adresses/Edit/5
+        // To protect from overposting attacks, enable the specific properties you want to bind to, for 
+        // more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Edit(int id, [Bind("ID,CustomerID,StreetAdress,City,Zip,CountryID,Type")] Adress adress)
+        {
+            if (id != adress.AdressID)
+            {
+                return NotFound();
+            }
+
+            if (ModelState.IsValid)
+            {
+                try
+                {
+                    _context.Update(adress);
+                    await _context.SaveChangesAsync();
+                }
+                catch (DbUpdateConcurrencyException)
+                {
+                    if (!AdressExists(adress.AdressID))
+                    {
+                        return NotFound();
+                    }
+                    else
+                    {
+                        throw;
+                    }
+                }
+                return RedirectToAction(nameof(Index));
+            }
+            ViewData["CountryID"] = new SelectList(_context.Set<Country>(), "ID", "ID", adress.CountryID);
+            ViewData["CustomerID"] = new SelectList(_context.Customer, "ID", "ID", adress.CustomerID);
+            return View(adress);
+        }
+
+        private void PopulateCountryDropDownList(object selectedCountry = null)
+        {
+            var query = from d in _context.Countrie
+                                   orderby d.Name
+                                   select d;
+            ViewBag.CountryID = new SelectList(query.AsNoTracking(), "DepartmentID", "Name", selectedCountry);
+        }
+        private void PopulateCustomerDropDownList(object customerCountry = null)
+        {
+            var query = from d in _context.Countrie
+                        orderby d.Name
+                        select d;
+            ViewBag.CustomerID = new SelectList(query.AsNoTracking(), "DepartmentID", "Name", customerCountry);
+        }
+
+        // GET: Adresses/Delete/5
+        public async Task<IActionResult> Delete(int? id)
+        {
+            if (id == null)
+            {
+                return NotFound();
+            }
+
+            var adress = await _context.Adress
+                .Include(a => a.Country)
+                .Include(a => a.Customer)
+                .FirstOrDefaultAsync(m => m.AdressID == id);
+            if (adress == null)
+            {
+                return NotFound();
+            }
+
+            return View(adress);
+        }
+
+        // POST: Adresses/Delete/5
+        [HttpPost, ActionName("Delete")]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> DeleteConfirmed(int id)
+        {
+            var adress = await _context.Adress.FindAsync(id);
+            _context.Adress.Remove(adress);
+            await _context.SaveChangesAsync();
+            return RedirectToAction(nameof(Index));
+        }
+
+        private bool AdressExists(int id)
+        {
+            return _context.Adress.Any(e => e.AdressID == id);
+        }
+    }
+}
