@@ -49,8 +49,9 @@ namespace CRUD_App.Controllers
         // GET: Adresses/Create
         public IActionResult Create()
         {
-            ViewData["CountryID"] = new SelectList(_context.Set<Country>(), "ID", "ID");
-            ViewData["CustomerID"] = new SelectList(_context.Customer, "ID", "ID");
+            ViewData["CountryID"] = new SelectList(_context.Set<Country>(), "CountryID", "Name");
+            ViewData["CustomerID"] = new SelectList(_context.Customer, "CustomerID", "FullName");
+            ViewData["AdressType"] = new SelectList(Enum.GetValues(typeof(Adress.AdressType)));
             return View();
         }
 
@@ -67,8 +68,8 @@ namespace CRUD_App.Controllers
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["CountryID"] = new SelectList(_context.Set<Country>(), "ID", "ID", adress.CountryID);
-            ViewData["CustomerID"] = new SelectList(_context.Customer, "ID", "ID", adress.CustomerID);
+            ViewData["CountryID"] = new SelectList(_context.Set<Country>(), "CountryID", "Name", adress.CountryID);
+            ViewData["CustomerID"] = new SelectList(_context.Customer, "CustomerID", "FullName", adress.CustomerID);
             return View(adress);
         }
 
@@ -100,7 +101,7 @@ namespace CRUD_App.Controllers
         // more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("ID,CustomerID,StreetAdress,City,Zip,CountryID,Type")] Adress adress)
+        public async Task<IActionResult> Edit(int id, [Bind("AdressID,CustomerID,StreetAdress,City,Zip,CountryID,Type")] Adress adress)
         {
             if (id != adress.AdressID)
             {

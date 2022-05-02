@@ -1,10 +1,10 @@
 ﻿@model IEnumerable<CRUD_App.Models.Adress>
 
 @{
-    ViewData["Title"] = "Index";
+    ViewData["Title"] = "Adresses";
 }
 
-<h1>Index</h1>
+<h1>Adresses</h1>
 
 <p>
     <a asp-action="Create">Create New</a>
@@ -37,7 +37,7 @@
 @foreach (var item in Model) {
         <tr>
             <td>
-                @Html.DisplayFor(modelItem => item.Customer.CustomerID)
+                @Html.DisplayFor(modelItem => item.Customer.FullName)
             </td>
             <td>
                 @Html.DisplayFor(modelItem => item.StreetAdress)
@@ -49,7 +49,7 @@
                 @Html.DisplayFor(modelItem => item.Zip)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.Country.CountryID)
+                @Html.DisplayFor(modelItem => item.Country.Name)
             </td>
             <td>
                 @Html.DisplayFor(modelItem => item.Type)

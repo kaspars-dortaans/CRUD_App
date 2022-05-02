@@ -1,10 +1,11 @@
-﻿using System;
+﻿using CRUD_App.Models;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 
-namespace CRUD_App.Models
+namespace CRUD_App.ViewModels.Customer
 {
-    public class Customer
+    public class CustomerIndexViewModel
     {
         public enum GenderEnum { Male, Female }
 
@@ -20,5 +21,7 @@ namespace CRUD_App.Models
         public DateTime BirthDate { get; set; }
         public ICollection<Adress> Adresses { get; set; }
         public GenderEnum Gender { get; set; }
+        [Display(Name = "Delivery adresses")]
+        public int DeliveryAdressesCount { get; set; }
     }
 }

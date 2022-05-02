@@ -47,10 +47,10 @@ namespace CRUD_App.Data
             {
                 new Adress{CustomerID=3, StreetAdress="Atbrīvošanas aleja 155-1", City="Rēzekne", Zip="LV-4000", CountryID=1, Type=Adress.AdressType.Billing},
                 new Adress{CustomerID=3, StreetAdress="Atbrīvošanas aleja 155-4", City="Rēzekne", Zip="LV-4000", CountryID=1, Type=Adress.AdressType.Delivery},
-                new Adress{CustomerID=1, StreetAdress="Example of street adress in Lithuania 1 (Billing)", City="CityInLithuania", Zip="LT-4000", CountryID=1, Type=Adress.AdressType.Billing},
-                new Adress{CustomerID=1, StreetAdress="Example of street adress in Lithuania 1 (Delivery)", City="CityInLithuania", Zip="LT-4000", CountryID=1, Type=Adress.AdressType.Delivery},
-                new Adress{CustomerID=2, StreetAdress="Example of street adress in Estonia 1 (Billing)", City="CityInEstonia", Zip="EE-4000", CountryID=1, Type=Adress.AdressType.Billing},
-                new Adress{CustomerID=2, StreetAdress="Example of street adress in Estonia 1 (Delivery)", City="CityInEstonia", Zip="EE-4000", CountryID=1, Type=Adress.AdressType.Delivery},
+                new Adress{CustomerID=1, StreetAdress="Example of street adress in Lithuania 1 (Billing)", City="CityInLithuania", Zip="LT-4000", CountryID=2, Type=Adress.AdressType.Billing},
+                new Adress{CustomerID=1, StreetAdress="Example of street adress in Lithuania 1 (Delivery)", City="CityInLithuania", Zip="LT-4000", CountryID=2, Type=Adress.AdressType.Delivery},
+                new Adress{CustomerID=2, StreetAdress="Example of street adress in Estonia 1 (Billing)", City="CityInEstonia", Zip="EE-4000", CountryID=3, Type=Adress.AdressType.Billing},
+                new Adress{CustomerID=2, StreetAdress="Example of street adress in Estonia 1 (Delivery)", City="CityInEstonia", Zip="EE-4000", CountryID=3, Type=Adress.AdressType.Delivery},
             };
             foreach (Adress s in Adresses)
             {

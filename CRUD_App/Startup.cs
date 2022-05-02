@@ -10,6 +10,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using CRUD_App.Data;
 using Microsoft.EntityFrameworkCore;
+using AutoMapper;
 
 namespace CRUD_App
 {
@@ -25,8 +26,12 @@ namespace CRUD_App
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            //Dependecy Injection
             services.AddDbContext<AppDbContext>(options =>
                     options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
+
+            //AutoMapper
+            services.AddAutoMapper(System.Reflection.Assembly.GetExecutingAssembly());
 
             services.AddControllersWithViews();
         }

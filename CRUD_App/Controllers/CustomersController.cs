@@ -7,22 +7,34 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using CRUD_App.Data;
 using CRUD_App.Models;
+using AutoMapper;
 
 namespace CRUD_App.Controllers
 {
     public class CustomersController : Controller
     {
         private readonly AppDbContext _context;
+        private readonly IMapper _mapper;
 
-        public CustomersController(AppDbContext context)
+        public CustomersController(AppDbContext context, IMapper mapper)
         {
             _context = context;
+            _mapper = mapper;
         }
 
         // GET: Customers
         public async Task<IActionResult> Index()
         {
-            return View(await _context.Customer.ToListAsync());
+            var customerList = await _context.Customer.ToListAsync();
+            var customersViewModelList = _mapper.Map<List<ViewModels.Customer.CustomerIndexViewModel>>(customerList);
+
+            customersViewModelList
+                .ForEach(customer => customer.DeliveryAdressesCount = 
+                    _context.Adress.Count(
+                        adress => adress.CustomerID == customer.CustomerID 
+                        && adress.Type == Adress.AdressType.Delivery));
+            
+            return View(customersViewModelList);
         }
 
         // GET: Customers/Details/5
@@ -46,6 +58,7 @@ namespace CRUD_App.Controllers
         // GET: Customers/Create
         public IActionResult Create()
         {
+            ViewData["Genders"] = new SelectList(Enum.GetValues(typeof(Customer.GenderEnum)));
             return View();
         }
 
@@ -54,7 +67,7 @@ namespace CRUD_App.Controllers
         // more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("ID,FullName,Email,BirthDate")] Customer customer)
+        public async Task<IActionResult> Create([Bind("ID,FullName,Email,BirthDate,Gender")] Customer customer)
         {
             if (ModelState.IsValid)
             {
@@ -78,6 +91,9 @@ namespace CRUD_App.Controllers
             {
                 return NotFound();
             }
+
+            ViewData["Genders"] = new SelectList(Enum.GetValues(typeof(Customer.GenderEnum)), customer.Gender);
+
             return View(customer);
         }
 
@@ -86,7 +102,7 @@ namespace CRUD_App.Controllers
         // more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("ID,FullName,Email,BirthDate")] Customer customer)
+        public async Task<IActionResult> Edit(int id, [Bind("ID,FullName,Email,BirthDate,Gender")] Customer customer)
         {
             if (id != customer.CustomerID)
             {
