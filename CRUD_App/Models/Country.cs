@@ -6,6 +6,8 @@ namespace CRUD_App.Models
     {
         [Display(Name = "Country")]
         public int CountryID { get; set; }
+
+        [Required]
         public string Name { get; set; }
     }
 }

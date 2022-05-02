@@ -109,6 +109,12 @@ namespace CRUD_App.Controllers
                 return NotFound();
             }
 
+            int maxLifeSpan = 150;
+            if (customer.BirthDate > DateTime.Today)
+                Console.WriteLine("More");
+            else if(customer.BirthDate.Year < DateTime.Today.Year - maxLifeSpan)
+                Console.WriteLine("Less");
+
             if (ModelState.IsValid)
             {
                 try
