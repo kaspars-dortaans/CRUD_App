@@ -97,6 +97,17 @@ namespace CRUD_App.Controllers
             return View(customer);
         }
 
+        [AcceptVerbs("GET", "POST")]
+        public IActionResult VarifyBirthDate(DateTime birthDate)
+        {
+            int maxLifeSpan = 150;
+            if (birthDate > DateTime.Today ||
+                birthDate.Year < DateTime.Today.Year - maxLifeSpan)
+                return Json(false);
+
+            return Json(true);
+        }
+
         // POST: Customers/Edit/5
         // To protect from overposting attacks, enable the specific properties you want to bind to, for 
         // more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
@@ -108,12 +119,6 @@ namespace CRUD_App.Controllers
             {
                 return NotFound();
             }
-
-            int maxLifeSpan = 150;
-            if (customer.BirthDate > DateTime.Today)
-                Console.WriteLine("More");
-            else if(customer.BirthDate.Year < DateTime.Today.Year - maxLifeSpan)
-                Console.WriteLine("Less");
 
             if (ModelState.IsValid)
             {
@@ -163,6 +168,8 @@ namespace CRUD_App.Controllers
         {
             var customer = await _context.Customer.FindAsync(id);
             _context.Customer.Remove(customer);
+            _context.Adress.RemoveRange(
+                _context.Adress.Where(a => a.CustomerID == customer.CustomerID));
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
